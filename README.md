@@ -1,6 +1,6 @@
 # Swag Labs Automated Tests with Playwright
 
-This repository contains automated tests for the **[Swag Labs]** (https://www.saucedemo.com/v1/) demo website using the **Playwright** framework. The tests cover various login scenarios, including successful login, validation of required fields, error messages, and the ability to close error message containers.
+This repository contains automated tests for the [**Swag Labs**] (https://www.saucedemo.com/v1/) demo website using the **Playwright** framework. The tests cover various login scenarios, including successful login, validation of required fields, error messages, and the ability to close error message containers.
 
 ## Prerequisites
 
