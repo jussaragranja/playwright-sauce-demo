@@ -1,10 +1,9 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('Swag Labs Login Tests', () => {
-  const baseUrl = 'https://www.saucedemo.com/';
 
   test('Validate successful login', async ({ page }) => {
-    await page.goto(baseUrl);
+    await page.goto('/');
     await page.fill('#user-name', 'standard_user');
     await page.fill('#password', 'secret_sauce');
     await page.click('#login-button');
@@ -12,7 +11,7 @@ test.describe('Swag Labs Login Tests', () => {
   });
 
   test('Validate username field is required', async ({ page }) => {
-    await page.goto(baseUrl);
+    await page.goto('/');
     await page.fill('#password', 'secret_sauce');
     await page.click('#login-button');
     const errorMessage = await page.locator('[data-test="error"]');
@@ -20,7 +19,7 @@ test.describe('Swag Labs Login Tests', () => {
   });
 
   test('Validate password field is required', async ({ page }) => {
-    await page.goto(baseUrl);
+    await page.goto('/');
     await page.fill('#user-name', 'standard_user');
     await page.click('#login-button');
     const errorMessage = await page.locator('[data-test="error"]');
@@ -28,7 +27,7 @@ test.describe('Swag Labs Login Tests', () => {
   });
 
   test('Validate login is not possible with an invalid username', async ({ page }) => {
-    await page.goto(baseUrl);
+    await page.goto('/');
     await page.fill('#user-name', 'invalid_user');
     await page.fill('#password', 'secret_sauce');
     await page.click('#login-button');
@@ -37,7 +36,7 @@ test.describe('Swag Labs Login Tests', () => {
   });
 
   test('Validate login is not possible with an invalid password', async ({ page }) => {
-    await page.goto(baseUrl);
+    await page.goto('/');
     await page.fill('#user-name', 'standard_user');
     await page.fill('#password', 'wrong_password');
     await page.click('#login-button');
@@ -46,7 +45,7 @@ test.describe('Swag Labs Login Tests', () => {
   });
 
   test('Validate that the error message container can be closed', async ({ page }) => {
-    await page.goto(baseUrl);
+    await page.goto('/');
     await page.fill('#password', 'secret_sauce');
     await page.click('#login-button');
     const errorMessage = await page.locator('[data-test="error"]');
