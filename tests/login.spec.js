@@ -1,57 +1,53 @@
 const { test, expect } = require('@playwright/test');
+const { LoginPage } = require('../pages/LoginPage');
+const testData = require('../utils/testData');
 
 test.describe('Swag Labs Login Tests', () => {
-
   test('Validate successful login', async ({ page }) => {
-    await page.goto('/');
-    await page.fill('#user-name', 'standard_user');
-    await page.fill('#password', 'secret_sauce');
-    await page.click('#login-button');
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testData.validUser.username, testData.validUser.password);
     await expect(page).toHaveURL(/inventory.html/);
   });
 
   test('Validate username field is required', async ({ page }) => {
-    await page.goto('/');
-    await page.fill('#password', 'secret_sauce');
-    await page.click('#login-button');
-    const errorMessage = await page.locator('[data-test="error"]');
-    await expect(errorMessage).toHaveText('Epic sadface: Username is required');
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('', testData.validUser.password);
+    await expect(loginPage.errorMessage).toHaveText('Epic sadface: Username is required');
   });
 
   test('Validate password field is required', async ({ page }) => {
-    await page.goto('/');
-    await page.fill('#user-name', 'standard_user');
-    await page.click('#login-button');
-    const errorMessage = await page.locator('[data-test="error"]');
-    await expect(errorMessage).toHaveText('Epic sadface: Password is required');
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testData.validUser.username, '');
+    await expect(loginPage.errorMessage).toHaveText('Epic sadface: Password is required');
   });
 
   test('Validate login is not possible with an invalid username', async ({ page }) => {
-    await page.goto('/');
-    await page.fill('#user-name', 'invalid_user');
-    await page.fill('#password', 'secret_sauce');
-    await page.click('#login-button');
-    const errorMessage = await page.locator('[data-test="error"]');
-    await expect(errorMessage).toHaveText('Epic sadface: Username and password do not match any user in this service');
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testData.invalidUser.username, testData.invalidUser.password);
+    await expect(loginPage.errorMessage).toHaveText(
+      'Epic sadface: Username and password do not match any user in this service'
+    );
   });
 
   test('Validate login is not possible with an invalid password', async ({ page }) => {
-    await page.goto('/');
-    await page.fill('#user-name', 'standard_user');
-    await page.fill('#password', 'wrong_password');
-    await page.click('#login-button');
-    const errorMessage = await page.locator('[data-test="error"]');
-    await expect(errorMessage).toHaveText('Epic sadface: Username and password do not match any user in this service');
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testData.invalidPassword.username, testData.invalidPassword.password);
+    await expect(loginPage.errorMessage).toHaveText(
+      'Epic sadface: Username and password do not match any user in this service'
+    );
   });
 
   test('Validate that the error message container can be closed', async ({ page }) => {
-    await page.goto('/');
-    await page.fill('#password', 'secret_sauce');
-    await page.click('#login-button');
-    const errorMessage = await page.locator('[data-test="error"]');
-    await expect(errorMessage).toBeVisible();
-    const closeButton = await page.locator('[data-test="error-button"]');
-    await closeButton.click();
-    await expect(errorMessage).not.toBeVisible();
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login('', testData.validUser.password);
+    await expect(loginPage.errorMessage).toBeVisible();
+    await loginPage.closeError();
+    await expect(loginPage.errorMessage).not.toBeVisible();
   });
 });
