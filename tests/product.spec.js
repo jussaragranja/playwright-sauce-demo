@@ -1,22 +1,22 @@
-const { test, expect } = require('@playwright/test');
-require('./beforelogin'); // Importa o arquivo beforelogin.js
+const { test, expect } = require('../fixtures/loginUser');
+const { ProductPage } = require('../pages/ProductPage');
 
 test.describe('Swag Labs Product Page Tests', () => {
+  test.use({ loginAsStandardUser: true });
+
   test('Validate the title of the product page', async ({ page }) => {
-    const productTitle = await page.locator('//div[@class="product_label"]');
-    await expect(productTitle).toBeVisible();
-    await expect(productTitle).toHaveText('Products'); 
+    const productPage = new ProductPage(page);
+    await productPage.isLoaded();
+    await expect(productPage.productTitle).toHaveText('Products');
   });
 
   test('Add products to the cart and validate in the cart', async ({ page }) => {
-    const addToCartButtons = await page.locator('.btn_primary.btn_inventory');
-    const productCount = await addToCartButtons.count();
-    for (let i = 0; i < productCount; i++) {
-      await addToCartButtons.nth(i).click();
-    }
-    await page.click('#shopping_cart_container a.shopping_cart_link');
+    const productPage = new ProductPage(page);
+    await productPage.isLoaded();
+    const count = await productPage.addToCartButtons.count();
+    await productPage.addAllProductsToCart();
+    await productPage.goToCart();
     await expect(page).toHaveURL(/cart.html/);
-    const cartItems = await page.locator('.cart_item');
-    await expect(cartItems).toHaveCount(productCount);
+    await expect(productPage.cartItems).toHaveCount(count);
   });
 });
