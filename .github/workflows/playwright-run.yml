@@ -25,7 +25,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests with Allure Reporter
-        run: npx playwright test --reporter=line,allure-playwright --headless
+        run: npx playwright test --reporter=line,allure-playwright
 
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@master
