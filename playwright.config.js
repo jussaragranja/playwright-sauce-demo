@@ -9,7 +9,9 @@ module.exports = defineConfig({
     video: 'retain-on-failure',
   },
   reporter: [
+    ['line'],
+    ['allure-playwright'],
     ['list'],
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
+    ['html', { outputFolder: 'playwright-report', open: 'never' }]
   ],
 });

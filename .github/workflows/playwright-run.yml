@@ -24,9 +24,21 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      # Execute os testes Playwright com Allure
-      - name: Run Playwright Tests
+      - name: Run Playwright Tests with Allure Reporter
+        run: npx playwright test --reporter=line,allure-playwright --headless
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        with:
+          allure_results: allure-results
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v2
         env:
-          API_TOKEN: ${{ secrets.API_TOKEN }}
-        run: |
-          npx playwright test
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
